@@ -66,17 +66,47 @@ kubectl apply -f k8s/monitoring/grafana-deployment.yaml
 
 # Wait for monitoring to be ready
 print_status "Waiting for monitoring stack to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/prometheus -n monitoring
-kubectl wait --for=condition=available --timeout=300s deployment/grafana -n monitoring
+kubectl wait --for=condition=available --timeout=300s deployment/prometheus -n monitoring || {
+    print_error "Prometheus deployment failed to become ready"
+    kubectl get pods -n monitoring
+    kubectl describe deployment prometheus -n monitoring
+    exit 1
+}
+
+kubectl wait --for=condition=available --timeout=300s deployment/grafana -n monitoring || {
+    print_error "Grafana deployment failed to become ready"
+    kubectl get pods -n monitoring
+    kubectl describe deployment grafana -n monitoring
+    exit 1
+}
+
+# Apply Kong dependencies first
+print_status "Setting up Kong dependencies..."
+kubectl apply -f k8s/kong/configmap.yaml
+kubectl apply -f k8s/kong/config-file.yaml
+kubectl apply -f k8s/kong/secrets.yaml
 
 # Apply other services
 print_status "Setting up other services..."
 kubectl apply -f k8s/
 
-# Wait for all deployments to be ready
-print_status "Waiting for all deployments to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/kong -n default
+# Wait for Kong deployment
+print_status "Waiting for Kong deployment..."
+if ! kubectl get deployment kong &> /dev/null; then
+    print_error "Kong deployment not found. Checking Kong configuration..."
+    kubectl get pods
+    kubectl get deployments
+    kubectl get configmaps
+    kubectl get secrets
+    exit 1
+fi
+
+kubectl wait --for=condition=available --timeout=300s deployment/kong || {
+    print_error "Kong deployment failed to become ready"
+    kubectl get pods
+    kubectl describe deployment kong
+    exit 1
+}
 
 # Make scripts executable
 print_status "Making scripts executable..."
