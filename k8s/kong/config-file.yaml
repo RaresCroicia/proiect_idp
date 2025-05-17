@@ -14,15 +14,29 @@ data:
           latency_metrics: true
           bandwidth_metrics: true
           upstream_health_metrics: true
+      - name: cors
+        config:
+          origins: ['*']
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+          headers: ['Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'Authorization']
+          exposed_headers: ['X-Auth-Token']
+          credentials: true
+          max_age: 3600
 
     services:
       - name: frontend
-        url: http://frontend:3000
+        url: http://frontend:80
         routes:
           - name: frontend-route
             paths:
               - /
             strip_path: false
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: auth-service
         url: http://auth-service:3001
@@ -31,6 +45,12 @@ data:
             paths:
               - /auth
             strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: course-service
         url: http://course-service:3002
@@ -39,6 +59,12 @@ data:
             paths:
               - /courses
             strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: ingestion-service
         url: http://ingestion-service:3003
@@ -47,6 +73,12 @@ data:
             paths:
               - /ingestion
             strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: metrics
         url: http://kong-admin:8001
@@ -54,6 +86,12 @@ data:
           - name: metrics-route
             paths:
               - /metrics
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: grafana
         url: http://grafana.monitoring:3000
@@ -62,6 +100,12 @@ data:
             paths:
               - /grafana
             strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: prometheus
         url: http://prometheus.monitoring:9090
@@ -70,6 +114,12 @@ data:
             paths:
               - /prometheus
             strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de
 
       - name: argocd
         url: http://argocd-server.argocd:8080
@@ -77,4 +127,10 @@ data:
           - name: argocd-route
             paths:
               - /argo
-            strip_path: true 
+            strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+            hosts:
+              - static.79.104.245.188.clients.your-server.de 
