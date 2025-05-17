@@ -86,9 +86,10 @@ kubectl apply -f k8s/kong/configmap.yaml
 kubectl apply -f k8s/kong/config-file.yaml
 kubectl apply -f k8s/kong/secrets.yaml
 
-# Apply other services
-print_status "Setting up other services..."
-kubectl apply -f k8s/
+# Apply Kong deployment and service
+print_status "Setting up Kong..."
+kubectl apply -f k8s/kong/deployment.yaml
+kubectl apply -f k8s/kong/service.yaml
 
 # Wait for Kong deployment
 print_status "Waiting for Kong deployment..."
@@ -107,6 +108,10 @@ kubectl wait --for=condition=available --timeout=300s deployment/kong || {
     kubectl describe deployment kong
     exit 1
 }
+
+# Apply remaining services
+print_status "Setting up remaining services..."
+kubectl apply -f k8s/
 
 # Make scripts executable
 print_status "Making scripts executable..."
