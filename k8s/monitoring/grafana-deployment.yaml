@@ -46,6 +46,10 @@ spec:
       labels:
         app: grafana
     spec:
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+          - 0
       containers:
       - name: grafana
         image: grafana/grafana:10.0.0
@@ -63,6 +67,10 @@ spec:
           value: "admin"  # Change this in production
         - name: GF_USERS_ALLOW_SIGN_UP
           value: "false"
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-piechart-panel,grafana-worldmap-panel"
+        - name: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
+          value: "true"
         volumeMounts:
         - name: grafana-storage
           mountPath: /var/lib/grafana
@@ -73,6 +81,18 @@ spec:
         - name: grafana-dashboard-provider
           mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml
           subPath: dashboards.yaml
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 60
+          timeoutSeconds: 30
       volumes:
       - name: grafana-storage
         persistentVolumeClaim:
