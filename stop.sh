@@ -46,7 +46,7 @@ kubectl scale deployment grafana --replicas=0 -n monitoring
 
 # Scale down other services
 print_status "Scaling down other services..."
-kubectl scale deployment kong --replicas=0 -n default
+kubectl scale deployment kong --replicas=0
 kubectl scale deployment argocd-server --replicas=0 -n argocd
 
 print_status "All services have been stopped!"

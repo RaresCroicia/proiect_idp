@@ -56,7 +56,13 @@ print_status "Applying Kubernetes configurations..."
 
 # Apply monitoring stack first
 print_status "Setting up monitoring stack..."
-kubectl apply -f k8s/monitoring/
+# Apply ConfigMaps first
+kubectl apply -f k8s/monitoring/grafana-dashboards.yaml
+kubectl apply -f k8s/monitoring/prometheus-config.yaml
+
+# Then apply deployments
+kubectl apply -f k8s/monitoring/prometheus-deployment.yaml
+kubectl apply -f k8s/monitoring/grafana-deployment.yaml
 
 # Wait for monitoring to be ready
 print_status "Waiting for monitoring stack to be ready..."
