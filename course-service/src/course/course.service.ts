@@ -1,76 +1,82 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { Course } from './entities/course.entity';
-import { Lesson } from './entities/lesson.entity';
-import { Quiz } from './entities/quiz.entity';
-import { UserCourse } from './entities/user-course.entity';
 
 @Injectable()
 export class CourseService {
+  private readonly ingestionServiceUrl: string;
+
   constructor(
-    @InjectRepository(Course)
-    private courseRepository: Repository<Course>,
-    @InjectRepository(Lesson)
-    private lessonRepository: Repository<Lesson>,
-    @InjectRepository(Quiz)
-    private quizRepository: Repository<Quiz>,
-    @InjectRepository(UserCourse)
-    private userCourseRepository: Repository<UserCourse>,
-  ) {}
-
-  async createCourse(courseData: Partial<Course>): Promise<Course> {
-    const course = this.courseRepository.create(courseData);
-    return this.courseRepository.save(course);
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    this.ingestionServiceUrl = this.configService.get<string>('config.ingestionServiceUrl') || 'http://localhost:3003';
   }
 
-  async findAllCourses(): Promise<Course[]> {
-    return this.courseRepository.find({
-      relations: ['lessons', 'lessons.quizzes'],
-    });
+  private getHeaders(token: string) {
+    return {
+      Authorization: `Bearer ${token}`,
+    };
   }
 
-  async findCourseById(id: string): Promise<Course> {
-    const course = await this.courseRepository.findOne({
-      where: { id },
-      relations: ['lessons', 'lessons.quizzes'],
-    });
-    if (!course) {
-      throw new NotFoundException(`Course with ID ${id} not found`);
-    }
-    return course;
+  async createCourse(courseData: Partial<Course>, token: string): Promise<Course> {
+    const response = await this.httpService.axiosRef.post(
+      `${this.ingestionServiceUrl}/courses`, 
+      courseData,
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
   }
 
-  async updateCourse(id: string, courseData: Partial<Course>): Promise<Course> {
-    const course = await this.findCourseById(id);
-    Object.assign(course, courseData);
-    return this.courseRepository.save(course);
+  async findAllCourses(token: string): Promise<Course[]> {
+    const response = await this.httpService.axiosRef.get(
+      `${this.ingestionServiceUrl}/courses`,
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
   }
 
-  async deleteCourse(id: string): Promise<void> {
-    const course = await this.findCourseById(id);
-    await this.courseRepository.remove(course);
+  async findCourseById(id: string, token: string): Promise<Course> {
+    const response = await this.httpService.axiosRef.get(
+      `${this.ingestionServiceUrl}/courses/${id}`,
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
   }
 
-  async enrollUser(courseId: string, userId: string): Promise<Course> {
-    const course = await this.findCourseById(courseId);
-    const userCourse = this.userCourseRepository.create({
-      courseId,
-      userId,
-    });
-    await this.userCourseRepository.save(userCourse);
-    return course;
+  async updateCourse(id: string, courseData: Partial<Course>, token: string): Promise<Course> {
+    const response = await this.httpService.axiosRef.put(
+      `${this.ingestionServiceUrl}/courses/${id}`,
+      courseData,
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
   }
 
-  async unenrollUser(courseId: string, userId: string): Promise<Course> {
-    const course = await this.findCourseById(courseId);
-    const userCourse = await this.userCourseRepository.findOne({
-      where: { courseId, userId },
-    });
-    if (userCourse) {
-      await this.userCourseRepository.remove(userCourse);
-    }
-    return course;
+  async deleteCourse(id: string, token: string): Promise<void> {
+    await this.httpService.axiosRef.delete(
+      `${this.ingestionServiceUrl}/courses/${id}`,
+      { headers: this.getHeaders(token) }
+    );
+  }
+
+  async enrollUser(courseId: string, userId: string, token: string): Promise<Course> {
+    const response = await this.httpService.axiosRef.post(
+      `${this.ingestionServiceUrl}/courses/${courseId}/enroll`,
+      { userId },
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
+  }
+
+  async unenrollUser(courseId: string, userId: string, token: string): Promise<Course> {
+    const response = await this.httpService.axiosRef.post(
+      `${this.ingestionServiceUrl}/courses/${courseId}/unenroll`,
+      { userId },
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
   }
 
   async submitQuiz(
@@ -79,41 +85,13 @@ export class CourseService {
     quizId: string,
     userId: string,
     answers: number[],
+    token: string,
   ): Promise<{ score: number; passed: boolean }> {
-    const quiz = await this.quizRepository.findOne({
-      where: { id: quizId, lesson: { id: lessonId, course: { id: courseId } } },
-    });
-    if (!quiz) {
-      throw new NotFoundException('Quiz not found');
-    }
-
-    const score = this.calculateQuizScore(quiz.questions, answers);
-    const passed = score >= quiz.passingScore;
-
-    const userCourse = await this.userCourseRepository.findOne({
-      where: { courseId, userId },
-    });
-    if (userCourse) {
-      userCourse.progress = {
-        ...userCourse.progress,
-        [lessonId]: {
-          completed: passed,
-          quizScore: score,
-        },
-      };
-      await this.userCourseRepository.save(userCourse);
-    }
-
-    return { score, passed };
-  }
-
-  private calculateQuizScore(
-    questions: { correctAnswer: number }[],
-    answers: number[],
-  ): number {
-    const correctAnswers = answers.filter(
-      (answer, index) => answer === questions[index].correctAnswer,
-    ).length;
-    return (correctAnswers / questions.length) * 100;
+    const response = await this.httpService.axiosRef.post(
+      `${this.ingestionServiceUrl}/courses/${courseId}/lessons/${lessonId}/quizzes/${quizId}/submit`,
+      { userId, answers },
+      { headers: this.getHeaders(token) }
+    );
+    return response.data;
   }
 } 

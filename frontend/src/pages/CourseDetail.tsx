@@ -14,24 +14,7 @@ import {
 } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import QuizIcon from '@mui/icons-material/Quiz';
-import { courseApi } from '../services/api';
-
-interface Lesson {
-  id: string;
-  title: string;
-  duration: string;
-  hasQuiz: boolean;
-}
-
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  duration: string;
-  level: string;
-  lessons: Lesson[];
-}
+import { courseService, Course, Lesson } from '../services/course.service';
 
 const CourseDetail = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -45,8 +28,8 @@ const CourseDetail = () => {
       if (!courseId) return;
       
       try {
-        const response = await courseApi.getCourseById(courseId);
-        setCourse(response.data);
+        const courseData = await courseService.getCourseById(courseId);
+        setCourse(courseData);
       } catch (error) {
         console.error('Error fetching course:', error);
         setError('Failed to load course. Please try again later.');
@@ -95,7 +78,7 @@ const CourseDetail = () => {
         sx={{
           p: 3,
           mb: 4,
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${course.imageUrl})`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${course.imageUrl || '/default-course.jpg'})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           color: 'white',
@@ -111,10 +94,6 @@ const CourseDetail = () => {
         <Typography variant="h6" sx={{ mb: 2 }}>
           {course.description}
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Typography variant="subtitle1">Duration: {course.duration}</Typography>
-          <Typography variant="subtitle1">Level: {course.level}</Typography>
-        </Box>
       </Paper>
 
       <Typography variant="h4" gutterBottom>
@@ -129,11 +108,11 @@ const CourseDetail = () => {
               onClick={() => navigate(`/courses/${courseId}/lessons/${lesson.id}`)}
             >
               <ListItemIcon>
-                {lesson.hasQuiz ? <QuizIcon color="primary" /> : <PlayCircleOutlineIcon />}
+                {lesson.quizzes.length > 0 ? <QuizIcon color="primary" /> : <PlayCircleOutlineIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={lesson.title}
-                secondary={`Duration: ${lesson.duration}`}
+                secondary={`Order: ${lesson.order}`}
               />
             </ListItem>
           </Box>

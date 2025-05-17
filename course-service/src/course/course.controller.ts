@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { Course } from './entities/course.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -9,63 +9,56 @@ export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Post()
-  async createCourse(@Body() courseData: Partial<Course>): Promise<Course> {
-    return this.courseService.createCourse(courseData);
+  create(@Body() courseData: any, @Request() req) {
+    return this.courseService.createCourse(courseData, req.headers.authorization.split(' ')[1]);
   }
 
   @Get()
-  async findAllCourses(): Promise<Course[]> {
-    return this.courseService.findAllCourses();
+  findAll(@Request() req) {
+    return this.courseService.findAllCourses(req.headers.authorization.split(' ')[1]);
   }
 
   @Get(':id')
-  async findCourseById(@Param('id') id: string): Promise<Course> {
-    return this.courseService.findCourseById(id);
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.courseService.findCourseById(id, req.headers.authorization.split(' ')[1]);
   }
 
   @Put(':id')
-  async updateCourse(
-    @Param('id') id: string,
-    @Body() courseData: Partial<Course>,
-  ): Promise<Course> {
-    return this.courseService.updateCourse(id, courseData);
+  update(@Param('id') id: string, @Body() courseData: any, @Request() req) {
+    return this.courseService.updateCourse(id, courseData, req.headers.authorization.split(' ')[1]);
   }
 
   @Delete(':id')
-  async deleteCourse(@Param('id') id: string): Promise<void> {
-    return this.courseService.deleteCourse(id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.courseService.deleteCourse(id, req.headers.authorization.split(' ')[1]);
   }
 
   @Post(':id/enroll')
-  async enrollUser(
-    @Param('id') courseId: string,
-    @Body('userId') userId: string,
-  ): Promise<Course> {
-    return this.courseService.enrollUser(courseId, userId);
+  enrollUser(@Param('id') id: string, @Body('userId') userId: string, @Request() req) {
+    return this.courseService.enrollUser(id, userId, req.headers.authorization.split(' ')[1]);
   }
 
   @Post(':id/unenroll')
-  async unenrollUser(
-    @Param('id') courseId: string,
-    @Body('userId') userId: string,
-  ): Promise<Course> {
-    return this.courseService.unenrollUser(courseId, userId);
+  unenrollUser(@Param('id') id: string, @Body('userId') userId: string, @Request() req) {
+    return this.courseService.unenrollUser(id, userId, req.headers.authorization.split(' ')[1]);
   }
 
   @Post(':id/lessons/:lessonId/quizzes/:quizId/submit')
-  async submitQuiz(
-    @Param('id') courseId: string,
+  submitQuiz(
+    @Param('id') id: string,
     @Param('lessonId') lessonId: string,
     @Param('quizId') quizId: string,
     @Body('userId') userId: string,
     @Body('answers') answers: number[],
-  ): Promise<{ score: number; passed: boolean }> {
+    @Request() req,
+  ) {
     return this.courseService.submitQuiz(
-      courseId,
+      id,
       lessonId,
       quizId,
       userId,
       answers,
+      req.headers.authorization.split(' ')[1],
     );
   }
 } 

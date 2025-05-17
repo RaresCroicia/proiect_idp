@@ -1,48 +1,54 @@
 #!/bin/bash
 
 # Colors for output
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}[INFO]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+    echo -e "${GREEN}[+] $1${NC}"
 }
 
 print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    echo -e "${RED}[!] $1${NC}"
 }
 
-# Check if Docker is installed
-if ! command -v docker &> /dev/null; then
-    print_error "Docker is not installed. Please install Docker first."
+print_warning() {
+    echo -e "${YELLOW}[*] $1${NC}"
+}
+
+# Check if kubectl is installed
+if ! command -v kubectl &> /dev/null; then
+    print_error "kubectl is not installed. Please install it first."
     exit 1
 fi
 
-# Check if stack exists
-if ! docker stack ls | grep -q "elearning"; then
-    print_warning "Stack 'elearning' is not running."
-    exit 0
+# Check if the cluster is accessible
+print_status "Checking cluster connection..."
+if ! kubectl cluster-info &> /dev/null; then
+    print_error "Cannot connect to the cluster. Please check your kubeconfig."
+    exit 1
 fi
 
-# Stop the stack
-print_status "Stopping stack..."
-docker stack rm elearning
+# Stop port-forwarding processes
+print_status "Stopping port-forwarding processes..."
+pkill -f "kubectl port-forward" || true
 
-# Wait for services to stop
-print_status "Waiting for services to stop..."
-sleep 10
+# Scale down deployments
+print_status "Scaling down deployments..."
 
-# Check if all services are stopped
-if docker service ls | grep -q "elearning"; then
-    print_warning "Some services are still running. Force removing..."
-    docker service rm $(docker service ls -q --filter name=elearning)
-fi
+# Scale down monitoring stack
+print_status "Scaling down monitoring stack..."
+kubectl scale deployment prometheus --replicas=0 -n monitoring
+kubectl scale deployment grafana --replicas=0 -n monitoring
 
-print_status "All services have been stopped." 
+# Scale down other services
+print_status "Scaling down other services..."
+kubectl scale deployment kong --replicas=0 -n default
+kubectl scale deployment argocd-server --replicas=0 -n argocd
+
+print_status "All services have been stopped!"
+print_warning "To start services again, run:"
+echo -e "  ${GREEN}./start.sh${NC}" 

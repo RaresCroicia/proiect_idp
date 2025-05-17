@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { AppBar, Box, Container, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/auth.service';
 
 interface LayoutProps {
   children: ReactNode;
@@ -8,6 +9,36 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication status on mount and when token changes
+  useEffect(() => {
+    const checkAuth = () => {
+      const auth = authService.isAuthenticated();
+      console.log('Auth status:', auth);
+      setIsAuthenticated(auth);
+    };
+
+    // Check immediately
+    checkAuth();
+
+    // Set up storage event listener to detect token changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'access_token') {
+        checkAuth();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleLogout = () => {
+    console.log('Logging out...');
+    authService.logout();
+    setIsAuthenticated(false);
+    navigate('/login');
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -24,12 +55,20 @@ const Layout = ({ children }: LayoutProps) => {
           <Button color="inherit" onClick={() => navigate('/courses')}>
             Courses
           </Button>
-          <Button color="inherit" onClick={() => navigate('/login')}>
-            Login
-          </Button>
-          <Button color="inherit" onClick={() => navigate('/register')}>
-            Register
-          </Button>
+          {isAuthenticated ? (
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button color="inherit" onClick={() => navigate('/login')}>
+                Login
+              </Button>
+              <Button color="inherit" onClick={() => navigate('/register')}>
+                Register
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Container component="main" sx={{ flexGrow: 1, py: 3 }}>

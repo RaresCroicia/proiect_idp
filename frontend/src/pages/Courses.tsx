@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Grid as MuiGrid, Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Course } from '../types/course';
-import { getCourses } from '../services/courseService';
+import { courseService, Course } from '../services/course.service';
 
 const Grid = MuiGrid as any; // Temporary type assertion to fix build
 
@@ -13,7 +12,7 @@ export default function Courses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const data = await getCourses();
+        const data = await courseService.getAllCourses();
         setCourses(data);
       } catch (error) {
         console.error('Error fetching courses:', error);
@@ -31,7 +30,7 @@ export default function Courses() {
             <CardMedia
               component="img"
               height="140"
-              image={course.imageUrl}
+              image={course.imageUrl || '/default-course.jpg'}
               alt={course.title}
             />
             <CardContent>
@@ -42,13 +41,16 @@ export default function Courses() {
                 {course.description}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Price: ${course.price}
+                Instructor ID: {course.instructorId}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Rating: {course.rating}/5
+                Status: {course.isPublished ? 'Published' : 'Draft'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Enrollments: {course.enrollments}
+                Lessons: {course.lessons.length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Enrollments: {course.userCourses.length}
               </Typography>
               <Button
                 variant="contained"

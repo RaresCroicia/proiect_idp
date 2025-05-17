@@ -1,63 +1,48 @@
-_format_version: "3.0"
+_format_version: "2.1"
 _transform: true
 
 services:
   - name: auth-service
-    url: http://auth-service:3000
+    url: http://auth-service:3001
     routes:
-      - name: auth-routes
+      - name: auth-service-route
         paths:
           - /auth
-        methods:
-          - POST
-          - GET
         strip_path: true
 
   - name: course-service
-    url: http://course-service:3000
+    url: http://course-service:3002
     routes:
-      - name: course-routes
+      - name: course-service-route
         paths:
           - /courses
-        methods:
-          - GET
-          - POST
-          - PUT
-          - DELETE
         strip_path: true
 
   - name: ingestion-service
-    url: http://ingestion-service:3000
+    url: http://ingestion-service:3003
     routes:
-      - name: ingestion-routes
+      - name: ingestion-service-route
         paths:
-          - /api
-        methods:
-          - GET
-          - POST
-          - PUT
-          - DELETE
+          - /ingestion
         strip_path: true
 
   - name: frontend
-    url: http://frontend:3000
+    url: http://frontend:80
     routes:
-      - name: frontend-routes
+      - name: frontend-route
         paths:
           - /
-        methods:
-          - GET
-        strip_path: false
+        preserve_host: true
 
 plugins:
   - name: cors
     config:
-      origins: ["*"]
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-      headers: ["Accept", "Authorization", "Content-Type"]
-      exposedHeaders: ["*"]
+      origins: ['*']
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      headers: ['Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'Authorization']
+      exposed_headers: ['X-Auth-Token']
       credentials: true
-      maxAge: 3600
+      max_age: 3600
 
   - name: rate-limiting
     config:

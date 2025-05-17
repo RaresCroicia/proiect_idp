@@ -9,7 +9,7 @@ import {
   Link,
   Alert,
 } from '@mui/material';
-import { authApi } from '../services/api';
+import { authService } from '../services/auth.service';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,8 +32,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await authApi.login(formData.email, formData.password);
-      localStorage.setItem('token', response.data.token);
+      await authService.login(formData);
       navigate('/courses');
     } catch (err) {
       setError('Invalid email or password');

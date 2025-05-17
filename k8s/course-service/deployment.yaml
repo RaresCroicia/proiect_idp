@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: course-service
+  labels:
+    app: course-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: course-service
+  template:
+    metadata:
+      labels:
+        app: course-service
+    spec:
+      containers:
+      - name: course-service
+        image: course-service:latest
+        ports:
+        - containerPort: 3002
+        env:
+        - name: PORT
+          value: "3002"
+        - name: INGESTION_SERVICE_URL
+          value: "http://ingestion-service:3003"
+        - name: AUTH_SERVICE_URL
+          value: "http://auth-service:3001"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: course-secrets
+              key: JWT_SECRET
+        envFrom:
+        - configMapRef:
+            name: course-service-config
+        - secretRef:
+            name: course-service-secrets
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m" 

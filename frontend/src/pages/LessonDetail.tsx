@@ -16,27 +16,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { courseApi } from '../services/api';
-
-interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-}
-
-interface Lesson {
-  id: string;
-  title: string;
-  content: string;
-  videoUrl: string;
-  hasQuiz: boolean;
-  quiz?: {
-    id: string;
-    questions: QuizQuestion[];
-    passingScore: number;
-  };
-}
+import { courseService, Lesson, Quiz, QuizResult } from '../services/course.service';
 
 const LessonDetail = () => {
   const { courseId, lessonId } = useParams<{ courseId: string; lessonId: string }>();
@@ -45,17 +25,22 @@ const LessonDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
-  const [answers, setAnswers] = useState<{ [key: string]: number }>({});
+  const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
+  const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
 
   useEffect(() => {
     const fetchLesson = async () => {
       if (!courseId || !lessonId) return;
 
       try {
-        const response = await courseApi.getLesson(courseId, lessonId);
-        setLesson(response.data);
+        const course = await courseService.getCourseById(courseId);
+        const lessonData = course.lessons.find(l => l.id === lessonId);
+        if (lessonData) {
+          setLesson(lessonData);
+        } else {
+          setError('Lesson not found');
+        }
       } catch (error) {
         console.error('Error fetching lesson:', error);
         setError('Failed to load lesson. Please try again later.');
@@ -75,17 +60,19 @@ const LessonDetail = () => {
   };
 
   const handleQuizSubmit = async () => {
-    if (!lesson?.quiz || !courseId || !lessonId) return;
+    if (!lesson?.quizzes[0] || !courseId || !lessonId) return;
 
     try {
-      const response = await courseApi.submitQuiz(
+      const result = await courseService.submitQuiz(
         courseId,
         lessonId,
-        lesson.quiz.id,
-        'current-user-id', // TODO: Get actual user ID from auth context
-        Object.values(answers)
+        lesson.quizzes[0].id,
+        {
+          userId: 'current-user-id', // TODO: Get actual user ID from auth context
+          answers: Object.values(answers)
+        }
       );
-      setScore(response.data.score);
+      setQuizResult(result);
       setQuizSubmitted(true);
     } catch (error) {
       console.error('Error submitting quiz:', error);
@@ -126,89 +113,82 @@ const LessonDetail = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h4" gutterBottom>
           {lesson.title}
         </Typography>
         <Typography variant="body1" paragraph>
           {lesson.content}
         </Typography>
-        {lesson.videoUrl && (
-          <Box sx={{ mb: 3 }}>
-            <iframe
-              width="100%"
-              height="400"
-              src={lesson.videoUrl}
-              title={lesson.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </Box>
-        )}
-      </Paper>
 
-      {lesson.hasQuiz && !showQuiz && !quizSubmitted && (
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
+        {lesson.quizzes.length > 0 && !showQuiz && !quizSubmitted && (
           <Button
             variant="contained"
+            color="primary"
             onClick={() => setShowQuiz(true)}
-            startIcon={<CheckCircleIcon />}
+            sx={{ mt: 2 }}
           >
             Take Quiz
           </Button>
-        </Box>
-      )}
+        )}
 
-      {showQuiz && lesson.quiz && (
-        <Paper sx={{ p: 3 }}>
-          <Typography variant="h5" gutterBottom>
-            Quiz
-          </Typography>
-          <FormControl component="fieldset">
-            {lesson.quiz.questions.map((question) => (
-              <Box key={question.id} sx={{ mb: 3 }}>
-                <Typography variant="h6" gutterBottom>
-                  {question.question}
-                </Typography>
-                <RadioGroup
-                  value={answers[question.id]?.toString() || ''}
-                  onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                >
-                  {question.options.map((option, index) => (
-                    <FormControlLabel
-                      key={index}
-                      value={index.toString()}
-                      control={<Radio />}
-                      label={option}
-                    />
-                  ))}
-                </RadioGroup>
-                <Divider sx={{ my: 2 }} />
-              </Box>
-            ))}
-            <Button
-              variant="contained"
-              onClick={handleQuizSubmit}
-              disabled={Object.keys(answers).length !== lesson.quiz?.questions.length}
-            >
-              Submit Quiz
-            </Button>
-          </FormControl>
-        </Paper>
-      )}
+        {showQuiz && !quizSubmitted && lesson.quizzes[0] && (
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              Quiz: {lesson.quizzes[0].title}
+            </Typography>
+            <FormControl component="fieldset">
+              {lesson.quizzes[0].questions.map((question, index) => (
+                <Box key={index} sx={{ mb: 3 }}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {index + 1}. {question.question}
+                  </Typography>
+                  <RadioGroup
+                    value={answers[index]?.toString() || ''}
+                    onChange={(e) => handleAnswerChange(index.toString(), e.target.value)}
+                  >
+                    {question.options.map((option, optionIndex) => (
+                      <FormControlLabel
+                        key={optionIndex}
+                        value={optionIndex.toString()}
+                        control={<Radio />}
+                        label={option}
+                      />
+                    ))}
+                  </RadioGroup>
+                </Box>
+              ))}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleQuizSubmit}
+                sx={{ mt: 2 }}
+              >
+                Submit Quiz
+              </Button>
+            </FormControl>
+          </Box>
+        )}
 
-      {quizSubmitted && (
-        <Alert
-          severity={score >= (lesson.quiz?.passingScore || 0) ? 'success' : 'error'}
-          sx={{ mb: 3 }}
-        >
-          Your score: {score}% -{' '}
-          {score >= (lesson.quiz?.passingScore || 0)
-            ? 'Congratulations! You passed the quiz.'
-            : 'You need to score higher to pass.'}
-        </Alert>
-      )}
+        {quizSubmitted && quizResult && (
+          <Box sx={{ mt: 4, textAlign: 'center' }}>
+            <Typography variant="h5" gutterBottom>
+              Quiz Results
+            </Typography>
+            <Typography variant="h6" color={quizResult.passed ? 'success.main' : 'error.main'}>
+              Score: {quizResult.score}%
+              {quizResult.passed ? (
+                <CheckCircleIcon sx={{ ml: 1, verticalAlign: 'middle' }} />
+              ) : null}
+            </Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              {quizResult.passed
+                ? 'Congratulations! You passed the quiz.'
+                : 'You did not pass the quiz. Please try again.'}
+            </Typography>
+          </Box>
+        )}
+      </Paper>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
         <Button

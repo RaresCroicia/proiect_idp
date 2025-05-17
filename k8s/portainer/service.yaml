@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: portainer
+  labels:
+    app: portainer
+spec:
+  selector:
+    app: portainer
+  ports:
+  - name: http
+    port: 9000
+    targetPort: 9000
+    protocol: TCP
+  - name: edge
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+  type: LoadBalancer 

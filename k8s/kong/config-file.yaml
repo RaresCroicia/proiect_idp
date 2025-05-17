@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-config-file
+data:
+  kong.yml: |
+    _format_version: "2.1"
+    _transform: true
+
+    plugins:
+      - name: prometheus
+        config:
+          status_codes: true
+          latency_metrics: true
+          bandwidth_metrics: true
+          upstream_health_metrics: true
+
+    services:
+      - name: frontend
+        url: http://frontend:3000
+        routes:
+          - name: frontend-route
+            paths:
+              - /
+            strip_path: false
+
+      - name: auth-service
+        url: http://auth-service:3001
+        routes:
+          - name: auth-service-route
+            paths:
+              - /auth
+            strip_path: true
+
+      - name: course-service
+        url: http://course-service:3002
+        routes:
+          - name: course-service-route
+            paths:
+              - /courses
+            strip_path: true
+
+      - name: ingestion-service
+        url: http://ingestion-service:3003
+        routes:
+          - name: ingestion-service-route
+            paths:
+              - /ingestion
+            strip_path: true
+
+      - name: metrics
+        url: http://kong-admin:8001
+        routes:
+          - name: metrics-route
+            paths:
+              - /metrics
+
+      - name: grafana
+        url: http://grafana.monitoring:3000
+        routes:
+          - name: grafana-route
+            paths:
+              - /grafana
+            strip_path: true
+
+      - name: prometheus
+        url: http://prometheus.monitoring:9090
+        routes:
+          - name: prometheus-route
+            paths:
+              - /prometheus
+            strip_path: true
+
+      - name: argocd
+        url: http://argocd-server.argocd:8080
+        routes:
+          - name: argocd-route
+            paths:
+              - /argo
+            strip_path: true 

@@ -9,15 +9,16 @@ import {
   Link,
   Alert,
 } from '@mui/material';
-import { authApi } from '../services/api';
+import { authService } from '../services/auth.service';
 
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
+    firstName: '',
+    lastName: '',
   });
   const [error, setError] = useState('');
 
@@ -39,11 +40,8 @@ const Register = () => {
     }
 
     try {
-      await authApi.register(
-        formData.username,
-        formData.email,
-        formData.password
-      );
+      const { confirmPassword, ...registerData } = formData;
+      await authService.register(registerData);
       navigate('/login');
     } catch (err) {
       setError('Registration failed. Please try again.');
@@ -80,9 +78,18 @@ const Register = () => {
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Username"
-            name="username"
-            value={formData.username}
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            margin="normal"
+            required
+          />
+          <TextField
+            fullWidth
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
             onChange={handleChange}
             margin="normal"
             required

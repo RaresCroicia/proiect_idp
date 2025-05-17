@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CourseService } from './course.service';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 import { CourseController } from './course.controller';
-import { Course } from './entities/course.entity';
-import { Lesson } from './entities/lesson.entity';
-import { Quiz } from './entities/quiz.entity';
-import { UserCourse } from './entities/user-course.entity';
+import { CourseService } from './course.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Course, Lesson, Quiz, UserCourse]),
+    HttpModule,
+    ConfigModule,
   ],
   controllers: [CourseController],
   providers: [CourseService],
