@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ toLowerCase(github.actor) }}/proiect_idp/
+  IMAGE_NAME: rarescroicia/proiect-idp
 
 jobs:
   build-and-push:
