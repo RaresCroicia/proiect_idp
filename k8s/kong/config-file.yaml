@@ -83,6 +83,7 @@ data:
           - name: grafana-route
             paths:
               - /grafana
+              - /grafana/
             strip_path: false
             preserve_host: true
             protocols:
@@ -91,6 +92,7 @@ data:
             hosts:
               - "static.79.104.245.188.clients.your-server.de"
               - "188.245.104.79"
+            path_handling: "v1"
 
       - name: prometheus
         url: http://prometheus.monitoring:9090
