@@ -14,6 +14,7 @@ spec:
       labels:
         app: kong
     spec:
+      dnsPolicy: ClusterFirst
       containers:
       - name: kong
         image: kong:3.4
