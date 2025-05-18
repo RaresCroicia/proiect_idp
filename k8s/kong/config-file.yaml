@@ -8,12 +8,6 @@ data:
     _transform: true
 
     plugins:
-      - name: prometheus
-        config:
-          latency_metrics: true
-          bandwidth_metrics: true
-          upstream_health_metrics: true
-          per_consumer: true
       - name: cors
         config:
           origins: ['*']
@@ -24,12 +18,12 @@ data:
           max_age: 3600
 
     services:
-      - name: mockbin
-        url: https://mockbin.org
+      - name: httpbin
+        url: https://httpbin.org
         routes:
-          - name: mockbin-route
+          - name: httpbin-route
             paths:
-              - /mock
+              - /httpbin
             strip_path: true
             preserve_host: true
             protocols:

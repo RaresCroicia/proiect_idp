@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-test-config
+data:
+  kong.yml: |
+    _format_version: "2.1"
+    _transform: true
+
+    services:
+      - name: httpbin
+        url: https://httpbin.org
+        routes:
+          - name: httpbin-route
+            paths:
+              - /httpbin
+            strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https 
