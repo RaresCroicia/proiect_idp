@@ -108,19 +108,19 @@ data:
           - name: argocd-route
             paths:
               - /argo
-            strip_path: false
+            strip_path: true
             preserve_host: true
             protocols:
               - http
             path_handling: "v0"
 
       - name: pgadmin
-        url: http://pgadmin.default.svc.cluster.local:80
+        url: http://pgadmin.default.svc.cluster.local:5050
         routes:
           - name: pgadmin-route
             paths:
               - /pgadmin
-            strip_path: false
+            strip_path: true
             preserve_host: true
             protocols:
               - http
@@ -132,7 +132,7 @@ data:
           - name: portainer-route
             paths:
               - /portainer
-            strip_path: false
+            strip_path: true
             preserve_host: true
             protocols:
               - http
