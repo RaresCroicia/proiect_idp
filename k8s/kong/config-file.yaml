@@ -38,6 +38,7 @@ data:
               - https
             hosts:
               - static.79.104.245.188.clients.your-server.de
+              - 188.245.104.79
 
       - name: auth-service
         url: http://auth-service:3001
