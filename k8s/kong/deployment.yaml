@@ -28,9 +28,7 @@ spec:
           name: admin
         envFrom:
         - configMapRef:
-            name: kong-config-file
-        - secretRef:
-            name: kong-secrets
+            name: kong-config
         volumeMounts:
         - name: kong-config
           mountPath: /usr/local/kong/declarative
