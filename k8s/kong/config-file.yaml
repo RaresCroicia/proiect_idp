@@ -84,7 +84,7 @@ data:
           - name: grafana-route
             paths:
               - /grafana
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http

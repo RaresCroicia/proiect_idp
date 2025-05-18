@@ -28,6 +28,14 @@ data:
     [server]
     root_url = http://188.245.104.79/grafana
     serve_from_sub_path = true
+    domain = 188.245.104.79
+    [security]
+    cookie_secure = false
+    allow_embedding = true
+    [auth.anonymous]
+    enabled = true
+    org_name = Main Org.
+    org_role = Viewer
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
