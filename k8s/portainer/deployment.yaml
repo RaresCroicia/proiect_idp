@@ -22,6 +22,15 @@ spec:
           name: http
         - containerPort: 8000
           name: edge
+        env:
+        - name: PORTAINER_ADMIN_PASSWORD
+          value: "admin"
+        - name: PORTAINER_ADMIN_PASSWORD_HASH
+          value: "$2a$05$IxQ2H3Yj5zSYbA5p1YqpuOYg/8KwxYpF7YV1J9Kc9J9Kc9J9Kc9J9K"
+        - name: PORTAINER_SECURITY_TIMEOUT
+          value: "0"
+        - name: PORTAINER_SECURITY_TIMEOUT_ENABLED
+          value: "false"
         volumeMounts:
         - name: portainer-data
           mountPath: /data
