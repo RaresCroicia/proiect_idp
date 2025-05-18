@@ -78,7 +78,7 @@ data:
               - https
 
       - name: grafana
-        url: http://grafana.monitoring:3000
+        url: http://grafana.monitoring.svc.cluster.local:3000
         routes:
           - name: grafana-route
             paths:
