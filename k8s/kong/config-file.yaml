@@ -23,12 +23,13 @@ data:
         routes:
           - name: frontend-route
             paths:
-              - /
+              - /frontend
             strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: auth-service
         url: http://auth-service.default.svc.cluster.local:3001
@@ -36,11 +37,12 @@ data:
           - name: auth-service-route
             paths:
               - /auth
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: course-service
         url: http://course-service.default.svc.cluster.local:3002
@@ -48,11 +50,12 @@ data:
           - name: course-service-route
             paths:
               - /courses
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: ingestion-service
         url: http://ingestion-service.default.svc.cluster.local:3003
@@ -60,11 +63,12 @@ data:
           - name: ingestion-service-route
             paths:
               - /ingestion
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: metrics
         url: http://kong-admin.default.svc.cluster.local:8001
@@ -72,10 +76,12 @@ data:
           - name: metrics-route
             paths:
               - /metrics
+            strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: grafana
         url: http://grafana.monitoring.svc.cluster.local:3000
@@ -96,11 +102,12 @@ data:
           - name: prometheus-route
             paths:
               - /prometheus
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: argocd
         url: http://argocd-server.argocd.svc.cluster.local:80
@@ -108,11 +115,12 @@ data:
           - name: argocd-route
             paths:
               - /argo
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
               - https
+            path_handling: "v0"
 
       - name: pgadmin
         url: http://pgadmin.default.svc.cluster.local:80
@@ -124,4 +132,5 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https 
+              - https
+            path_handling: "v0" 
