@@ -41,8 +41,6 @@ spec:
         envFrom:
         - configMapRef:
             name: ingestion-service-config
-        - secretRef:
-            name: ingestion-service-secrets
         readinessProbe:
           httpGet:
             path: /health
