@@ -88,6 +88,8 @@ data:
             protocols:
               - http
               - https
+            hosts:
+              - "*"
 
       - name: prometheus
         url: http://prometheus.monitoring:9090

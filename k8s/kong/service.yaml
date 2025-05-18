@@ -11,11 +11,11 @@ spec:
     targetPort: 8000
     protocol: TCP
     name: proxy
-    nodePort: 30080
+    nodePort: 80
   - port: 8001
     targetPort: 8001
     protocol: TCP
     name: admin
-    nodePort: 30081
+    nodePort: 8001
   selector:
     app: kong 
