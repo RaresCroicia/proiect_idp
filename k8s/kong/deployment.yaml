@@ -23,10 +23,10 @@ spec:
           runAsUser: 0
           runAsGroup: 0
         ports:
-        - containerPort: 8000
+        - containerPort: 8080
           hostPort: 8080
           name: proxy
-        - containerPort: 8001
+        - containerPort: 8081
           hostPort: 8081
           name: admin
         envFrom:
@@ -39,13 +39,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /status
-            port: 8001
+            port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /status
-            port: 8001
+            port: 8081
           initialDelaySeconds: 15
           periodSeconds: 20
       volumes:
