@@ -11,23 +11,19 @@ spec:
   - name: proxy
     port: 80
     targetPort: 8000
-    nodePort: 30080
     protocol: TCP
   - name: proxy-ssl
     port: 443
     targetPort: 8443
-    nodePort: 30443
     protocol: TCP
   - name: admin
     port: 8001
     targetPort: 8001
-    nodePort: 30081
     protocol: TCP
   - name: admin-ssl
     port: 8444
     targetPort: 8444
-    nodePort: 30444
     protocol: TCP
-  type: NodePort
+  type: ClusterIP
   externalIPs:
     - 188.245.104.79 
