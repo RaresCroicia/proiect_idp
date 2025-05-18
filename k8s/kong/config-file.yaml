@@ -14,7 +14,6 @@ data:
           bandwidth_metrics: true
           upstream_health_metrics: true
           per_consumer: true
-          service_latency_histogram: true
       - name: cors
         config:
           origins: ['*']

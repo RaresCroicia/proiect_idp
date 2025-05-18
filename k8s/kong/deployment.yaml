@@ -15,20 +15,13 @@ spec:
         app: kong
     spec:
       hostNetwork: true
-      securityContext:
-        fsGroup: 1000
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
       - name: kong
         image: kong:3.4
         securityContext:
-          allowPrivilegeEscalation: false
-          runAsUser: 1000
-          runAsGroup: 1000
-          capabilities:
-            drop:
-              - ALL
+          allowPrivilegeEscalation: true
+          runAsUser: 0
+          runAsGroup: 0
         ports:
         - containerPort: 8000
           name: proxy

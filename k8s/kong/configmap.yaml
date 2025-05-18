@@ -12,5 +12,4 @@ data:
   KONG_PROXY_ERROR_LOG: "/dev/stderr"
   KONG_ADMIN_ERROR_LOG: "/dev/stderr"
   KONG_ADMIN_LISTEN: "0.0.0.0:8001"
-  KONG_PROXY_LISTEN: "0.0.0.0:8000"
-  KONG_NGINX_HTTP_INCLUDE: "/usr/local/kong/custom_nginx.template" 
+  KONG_PROXY_LISTEN: "0.0.0.0:8000" 
