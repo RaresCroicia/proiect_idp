@@ -40,8 +40,10 @@ kubectl port-forward svc/argocd-server -n argocd 8080:8080 &
 ARGOCD_PID=$!
 
 # Kong
-kubectl port-forward svc/kong -n default 8000:8000 &
+kubectl port-forward svc/kong -n default 80:80 &
 KONG_PID=$!
+kubectl port-forward svc/kong -n default 8001:8001 &
+KONG_ADMIN_PID=$!
 
 # Grafana
 kubectl port-forward svc/grafana -n monitoring 3000:3000 &
@@ -72,7 +74,8 @@ sleep 5
 
 print_status "All services are now accessible at:"
 echo -e "  - ArgoCD UI: ${GREEN}http://localhost:8080${NC}"
-echo -e "  - Kong API Gateway: ${GREEN}http://localhost:8000${NC}"
+echo -e "  - Kong API Gateway: ${GREEN}http://localhost:80${NC}"
+echo -e "  - Kong Admin API: ${GREEN}http://localhost:8001${NC}"
 echo -e "  - Grafana: ${GREEN}http://localhost:3000${NC}"
 echo -e "  - Prometheus: ${GREEN}http://localhost:9090${NC}"
 echo -e "  - Frontend: ${GREEN}http://localhost:3000${NC}"
@@ -89,6 +92,9 @@ cleanup() {
     fi
     if [ ! -z "$KONG_PID" ]; then
         kill $KONG_PID 2>/dev/null
+    fi
+    if [ ! -z "$KONG_ADMIN_PID" ]; then
+        kill $KONG_ADMIN_PID 2>/dev/null
     fi
     if [ ! -z "$GRAFANA_PID" ]; then
         kill $GRAFANA_PID 2>/dev/null
