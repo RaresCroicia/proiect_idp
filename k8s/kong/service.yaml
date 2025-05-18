@@ -5,17 +5,17 @@ metadata:
   labels:
     app: kong
 spec:
-  type: NodePort
+  type: ClusterIP
+  externalIPs:
+    - 188.245.104.79
   ports:
   - port: 80
     targetPort: 8000
     protocol: TCP
     name: proxy
-    nodePort: 30080
   - port: 8001
     targetPort: 8001
     protocol: TCP
     name: admin
-    nodePort: 30081
   selector:
     app: kong 
