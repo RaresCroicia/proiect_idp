@@ -84,7 +84,7 @@ data:
             paths:
               - /grafana
               - /grafana/
-            strip_path: false
+            strip_path: true
             preserve_host: true
             protocols:
               - http
@@ -93,6 +93,14 @@ data:
               - "static.79.104.245.188.clients.your-server.de"
               - "188.245.104.79"
             path_handling: "v1"
+        plugins:
+          - name: response-transformer
+            config:
+              transform:
+                headers:
+                  - "Location: /grafana/login"
+                if_status:
+                  - 302
 
       - name: prometheus
         url: http://prometheus.monitoring:9090
