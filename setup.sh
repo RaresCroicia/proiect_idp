@@ -84,7 +84,6 @@ kubectl wait --for=condition=available --timeout=300s deployment/grafana -n moni
 print_status "Setting up Kong dependencies..."
 kubectl apply -f k8s/kong/configmap.yaml
 kubectl apply -f k8s/kong/config-file.yaml
-kubectl apply -f k8s/kong/secrets.yaml
 
 # Apply Kong deployment and service
 print_status "Setting up Kong..."
@@ -93,15 +92,6 @@ kubectl apply -f k8s/kong/service.yaml
 
 # Wait for Kong deployment
 print_status "Waiting for Kong deployment..."
-if ! kubectl get deployment kong &> /dev/null; then
-    print_error "Kong deployment not found. Checking Kong configuration..."
-    kubectl get pods
-    kubectl get deployments
-    kubectl get configmaps
-    kubectl get secrets
-    exit 1
-fi
-
 kubectl wait --for=condition=available --timeout=300s deployment/kong || {
     print_error "Kong deployment failed to become ready"
     kubectl get pods
@@ -109,9 +99,21 @@ kubectl wait --for=condition=available --timeout=300s deployment/kong || {
     exit 1
 }
 
-# Apply remaining services
-print_status "Setting up remaining services..."
-kubectl apply -f k8s/
+# Apply all services
+print_status "Deploying all services..."
+kubectl apply -f k8s/frontend/
+kubectl apply -f k8s/auth-service/
+kubectl apply -f k8s/course-service/
+kubectl apply -f k8s/ingestion-service/
+kubectl apply -f k8s/postgres/
+kubectl apply -f k8s/pgadmin/
+
+# Wait for services to be ready
+print_status "Waiting for services to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/frontend || true
+kubectl wait --for=condition=available --timeout=300s deployment/auth-service || true
+kubectl wait --for=condition=available --timeout=300s deployment/course-service || true
+kubectl wait --for=condition=available --timeout=300s deployment/ingestion-service || true
 
 # Make scripts executable
 print_status "Making scripts executable..."
@@ -126,6 +128,10 @@ echo -e "  - ArgoCD UI: ${GREEN}http://localhost:8080${NC}"
 echo -e "  - Kong API Gateway: ${GREEN}http://localhost:8000${NC}"
 echo -e "  - Grafana: ${GREEN}http://localhost:3000${NC}"
 echo -e "  - Prometheus: ${GREEN}http://localhost:9090${NC}"
+echo -e "  - Frontend: ${GREEN}http://localhost:3000${NC}"
+echo -e "  - Auth Service: ${GREEN}http://localhost:3001${NC}"
+echo -e "  - Course Service: ${GREEN}http://localhost:3002${NC}"
+echo -e "  - Ingestion Service: ${GREEN}http://localhost:3003${NC}"
 echo -e "  - Public Domain: ${GREEN}http://static.79.104.245.188.clients.your-server.de${NC}"
 
 # Function to handle script termination

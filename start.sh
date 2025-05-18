@@ -51,6 +51,22 @@ GRAFANA_PID=$!
 kubectl port-forward svc/prometheus -n monitoring 9090:9090 &
 PROMETHEUS_PID=$!
 
+# Frontend
+kubectl port-forward svc/frontend -n default 3000:3000 &
+FRONTEND_PID=$!
+
+# Auth Service
+kubectl port-forward svc/auth-service -n default 3001:3001 &
+AUTH_PID=$!
+
+# Course Service
+kubectl port-forward svc/course-service -n default 3002:3002 &
+COURSE_PID=$!
+
+# Ingestion Service
+kubectl port-forward svc/ingestion-service -n default 3003:3003 &
+INGESTION_PID=$!
+
 # Wait for port-forwards to be ready
 sleep 5
 
@@ -59,6 +75,10 @@ echo -e "  - ArgoCD UI: ${GREEN}http://localhost:8080${NC}"
 echo -e "  - Kong API Gateway: ${GREEN}http://localhost:8000${NC}"
 echo -e "  - Grafana: ${GREEN}http://localhost:3000${NC}"
 echo -e "  - Prometheus: ${GREEN}http://localhost:9090${NC}"
+echo -e "  - Frontend: ${GREEN}http://localhost:3000${NC}"
+echo -e "  - Auth Service: ${GREEN}http://localhost:3001${NC}"
+echo -e "  - Course Service: ${GREEN}http://localhost:3002${NC}"
+echo -e "  - Ingestion Service: ${GREEN}http://localhost:3003${NC}"
 echo -e "  - Public Domain: ${GREEN}http://static.79.104.245.188.clients.your-server.de${NC}"
 
 # Function to handle script termination
@@ -75,6 +95,18 @@ cleanup() {
     fi
     if [ ! -z "$PROMETHEUS_PID" ]; then
         kill $PROMETHEUS_PID 2>/dev/null
+    fi
+    if [ ! -z "$FRONTEND_PID" ]; then
+        kill $FRONTEND_PID 2>/dev/null
+    fi
+    if [ ! -z "$AUTH_PID" ]; then
+        kill $AUTH_PID 2>/dev/null
+    fi
+    if [ ! -z "$COURSE_PID" ]; then
+        kill $COURSE_PID 2>/dev/null
+    fi
+    if [ ! -z "$INGESTION_PID" ]; then
+        kill $INGESTION_PID 2>/dev/null
     fi
     exit 0
 }
