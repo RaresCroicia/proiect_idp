@@ -14,7 +14,7 @@ spec:
       labels:
         app: kong
     spec:
-      dnsPolicy: ClusterFirst
+      hostNetwork: true
       containers:
       - name: kong
         image: kong:3.4
@@ -24,6 +24,7 @@ spec:
           runAsGroup: 0
         ports:
         - containerPort: 8000
+          hostPort: 80
           name: proxy
         - containerPort: 8001
           name: admin
