@@ -128,13 +128,6 @@ data:
 
       - name: portainer
         url: http://portainer.default.svc.cluster.local:9000
-        plugins:
-          - name: request-transformer
-            config:
-              add:
-                headers:
-                  - X-Forwarded-Proto: http
-                  - X-Forwarded-Host: 188.245.104.79
         routes:
           - name: portainer-route
             paths:
