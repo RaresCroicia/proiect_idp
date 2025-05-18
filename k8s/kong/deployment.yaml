@@ -24,10 +24,10 @@ spec:
           runAsGroup: 0
         ports:
         - containerPort: 8000
-          hostPort: 8000
+          hostPort: 8080
           name: proxy
         - containerPort: 8001
-          hostPort: 8001
+          hostPort: 8081
           name: admin
         envFrom:
         - configMapRef:
