@@ -28,7 +28,7 @@ spec:
           name: admin
         envFrom:
         - configMapRef:
-            name: kong-config
+            name: kong-config-file
         - secretRef:
             name: kong-secrets
         volumeMounts:
