@@ -14,6 +14,56 @@ spec:
       labels:
         app: kong
     spec:
+      containers:
+      - name: kong
+        image: kong:3.4
+        securityContext:
+          allowPrivilegeEscalation: true
+          runAsUser: 0
+          runAsGroup: 0
+        ports:
+        - containerPort: 8000
+          name: proxy
+        - containerPort: 8001
+          name: admin
+        envFrom:
+        - configMapRef:
+            name: kong-config
+        volumeMounts:
+        - name: kong-config
+          mountPath: /usr/local/kong/declarative
+          readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: kong-config
+        configMap:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong
+  labels:
+    app: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+  template:
+    metadata:
+      labels:
+        app: kong
+    spec:
       hostNetwork: true
       containers:
       - name: kong
