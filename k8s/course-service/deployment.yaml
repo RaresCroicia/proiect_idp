@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: course-service
-        image: course-service:latest
+        image: ghcr.io/rarescroicia/proiect-idp/course-service:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3002
         env:
