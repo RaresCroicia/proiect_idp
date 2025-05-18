@@ -24,6 +24,18 @@ data:
           max_age: 3600
 
     services:
+      - name: mockbin
+        url: https://mockbin.org
+        routes:
+          - name: mockbin-route
+            paths:
+              - /mock
+            strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+
       - name: frontend
         url: http://frontend:3000
         routes:
