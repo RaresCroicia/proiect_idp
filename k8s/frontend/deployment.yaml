@@ -19,7 +19,7 @@ spec:
         image: ghcr.io/rarescroicia/proiect-idp/frontend:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 80
+        - containerPort: 3000
         env:
         - name: VITE_API_URL
           value: http://kong:8000
@@ -27,6 +27,8 @@ spec:
           value: "/frontend"
         - name: VITE_SERVE_FROM_SUBPATH
           value: "true"
+        - name: VITE_PORT
+          value: "3000"
         resources:
           requests:
             memory: "128Mi"

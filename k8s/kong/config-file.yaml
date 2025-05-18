@@ -24,7 +24,8 @@ data:
           - name: frontend-route
             paths:
               - /frontend
-            strip_path: false
+              - /frontend/
+            strip_path: true
             preserve_host: true
             protocols:
               - http
