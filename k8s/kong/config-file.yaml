@@ -26,7 +26,7 @@ data:
 
     services:
       - name: frontend
-        url: http://frontend:80
+        url: http://frontend:3000
         routes:
           - name: frontend-route
             paths:
