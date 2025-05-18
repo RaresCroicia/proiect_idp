@@ -144,4 +144,6 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 print_warning "Press Ctrl+C to stop and exit"
-wait 
+wait
+
+kubectl logs -l app=kong -f 
