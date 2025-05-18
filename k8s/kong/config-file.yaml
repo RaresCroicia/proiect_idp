@@ -138,7 +138,5 @@ data:
               - http
             path_handling: "v0"
             headers:
-              - name: X-Forwarded-Proto
-                values: ["http"]
-              - name: X-Forwarded-Host
-                values: ["188.245.104.79"] 
+              X-Forwarded-Proto: http
+              X-Forwarded-Host: 188.245.104.79 
