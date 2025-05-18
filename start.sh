@@ -40,7 +40,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:80 &
 ARGOCD_PID=$!
 
 # Kong
-kubectl port-forward svc/kong -n default 80:80 &
+kubectl port-forward svc/kong -n default 8080:80 &
 KONG_PID=$!
 kubectl port-forward svc/kong -n default 8001:8001 &
 KONG_ADMIN_PID=$!
@@ -74,7 +74,7 @@ sleep 5
 
 print_status "All services are now accessible at:"
 echo -e "  - ArgoCD UI: ${GREEN}http://localhost:8080${NC}"
-echo -e "  - Kong API Gateway: ${GREEN}http://localhost:80${NC}"
+echo -e "  - Kong API Gateway: ${GREEN}http://localhost:8080${NC}"
 echo -e "  - Kong Admin API: ${GREEN}http://localhost:8001${NC}"
 echo -e "  - Grafana: ${GREEN}http://localhost:3000${NC}"
 echo -e "  - Prometheus: ${GREEN}http://localhost:9090${NC}"
