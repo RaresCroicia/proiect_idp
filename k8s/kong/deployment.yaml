@@ -14,14 +14,6 @@ spec:
       labels:
         app: kong
     spec:
-      hostNetwork: true
-      initContainers:
-      - name: init-kong
-        image: kong:3.4
-        command: ["/bin/sh", "-c", "mkdir -p /usr/local/kong && chown -R kong:kong /usr/local/kong"]
-        volumeMounts:
-        - name: kong-config
-          mountPath: /usr/local/kong/declarative
       containers:
       - name: kong
         image: kong:3.4
@@ -32,12 +24,8 @@ spec:
         ports:
         - containerPort: 8000
           name: proxy
-        - containerPort: 8443
-          name: proxy-ssl
         - containerPort: 8001
           name: admin
-        - containerPort: 8444
-          name: admin-ssl
         envFrom:
         - configMapRef:
             name: kong-config
@@ -47,6 +35,18 @@ spec:
         - name: kong-config
           mountPath: /usr/local/kong/declarative
           readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 20
       volumes:
       - name: kong-config
         configMap:

@@ -5,27 +5,17 @@ metadata:
   labels:
     app: kong
 spec:
-  selector:
-    app: kong
-  ports:
-  - name: proxy
-    port: 80
-    targetPort: 8000
-    nodePort: 30080
-    protocol: TCP
-  - name: proxy-ssl
-    port: 443
-    targetPort: 8443
-    protocol: TCP
-  - name: admin
-    port: 8001
-    targetPort: 8001
-    nodePort: 30081
-    protocol: TCP
-  - name: admin-ssl
-    port: 8444
-    targetPort: 8444
-    protocol: TCP
   type: NodePort
-  externalIPs:
-    - 188.245.104.79 
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: proxy
+    nodePort: 30080
+  - port: 8001
+    targetPort: 8001
+    protocol: TCP
+    name: admin
+    nodePort: 30081
+  selector:
+    app: kong 
