@@ -115,7 +115,7 @@ data:
             path_handling: "v0"
 
       - name: pgadmin
-        url: http://pgadmin.default.svc.cluster.local:5050
+        url: http://pgadmin.default.svc.cluster.local:80
         routes:
           - name: pgadmin-route
             paths:

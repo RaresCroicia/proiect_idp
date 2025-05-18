@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: ghcr.io/rarescroicia/proiect-idp/auth-service:latest
+        image: ghcr.io/rarescroicia/proiect-idp/auth-service:docker pull ghcr.io/rarescroicia/proiect-idp/frontend:38929f0f8d31aedbfbef92a2abe81285db909188
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3001

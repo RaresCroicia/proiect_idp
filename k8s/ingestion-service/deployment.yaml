@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: ingestion-service
-        image: ghcr.io/rarescroicia/proiect-idp/ingestion-service:latest
+        image: ghcr.io/rarescroicia/proiect-idp/ingestion-service:38929f0f8d31aedbfbef92a2abe81285db909188
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3003
