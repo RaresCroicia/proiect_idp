@@ -32,7 +32,9 @@ spec:
         - name: PGADMIN_CONFIG_MAIL_SERVER_ENABLED
           value: "False"
         - name: PGADMIN_CONFIG_LOGIN_BANNER
-          value: "Welcome to pgAdmin 4"
+          value: '"Welcome to pgAdmin 4"'
+        - name: PGADMIN_CONFIG_SESSION_TIMEOUT
+          value: "0"
         volumeMounts:
         - name: pgadmin-data
           mountPath: /var/lib/pgadmin
