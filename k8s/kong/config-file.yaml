@@ -19,7 +19,7 @@ data:
 
     services:
       - name: frontend
-        url: http://frontend:3000
+        url: http://frontend.default.svc.cluster.local:3000
         routes:
           - name: frontend-route
             paths:
@@ -31,7 +31,7 @@ data:
               - https
 
       - name: auth-service
-        url: http://auth-service:3001
+        url: http://auth-service.default.svc.cluster.local:3001
         routes:
           - name: auth-service-route
             paths:
@@ -43,7 +43,7 @@ data:
               - https
 
       - name: course-service
-        url: http://course-service:3002
+        url: http://course-service.default.svc.cluster.local:3002
         routes:
           - name: course-service-route
             paths:
@@ -55,7 +55,7 @@ data:
               - https
 
       - name: ingestion-service
-        url: http://ingestion-service:3003
+        url: http://ingestion-service.default.svc.cluster.local:3003
         routes:
           - name: ingestion-service-route
             paths:
@@ -67,7 +67,7 @@ data:
               - https
 
       - name: metrics
-        url: http://kong-admin:8001
+        url: http://kong-admin.default.svc.cluster.local:8001
         routes:
           - name: metrics-route
             paths:
@@ -91,7 +91,7 @@ data:
             path_handling: "v0"
 
       - name: prometheus
-        url: http://prometheus.monitoring:9090
+        url: http://prometheus.monitoring.svc.cluster.local:9090
         routes:
           - name: prometheus-route
             paths:
@@ -103,7 +103,7 @@ data:
               - https
 
       - name: argocd
-        url: http://argocd-server.argocd:8080
+        url: http://argocd-server.argocd.svc.cluster.local:8080
         routes:
           - name: argocd-route
             paths:
