@@ -1,22 +1,24 @@
 #!/bin/bash
 
-# Colors for output
-RED='\033[0;31m'
+# Color definitions
 GREEN='\033[0;32m'
+RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}[+] $1${NC}"
+    echo -e "${GREEN}[INFO]${NC} $1"
 }
 
+# Function to print error messages
 print_error() {
-    echo -e "${RED}[!] $1${NC}"
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Function to print warning messages
 print_warning() {
-    echo -e "${YELLOW}[*] $1${NC}"
+    echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
 # Check if kubectl is installed
@@ -25,100 +27,69 @@ if ! command -v kubectl &> /dev/null; then
     exit 1
 fi
 
-# Check if the cluster is accessible
-print_status "Checking cluster connection..."
+# Check if we can access the cluster
 if ! kubectl cluster-info &> /dev/null; then
-    print_error "Cannot connect to the cluster. Please check your kubeconfig."
+    print_error "Cannot access the Kubernetes cluster. Please check your configuration."
     exit 1
 fi
 
-# Start port-forwarding for all services
-print_status "Starting port-forwarding for services..."
+print_status "Starting port forwarding for services..."
 
-# ArgoCD
+# Start port forwarding for ArgoCD
+print_status "Starting port forwarding for ArgoCD..."
 kubectl port-forward svc/argocd-server -n argocd 8080:80 &
-ARGOCD_PID=$!
+print_status "ArgoCD is accessible at: http://localhost:8080"
 
-# Kong
-kubectl port-forward svc/kong -n default 8080:80 &
-KONG_PID=$!
-kubectl port-forward svc/kong -n default 8001:8001 &
-KONG_ADMIN_PID=$!
+# Start port forwarding for Kong
+print_status "Starting port forwarding for Kong..."
+kubectl port-forward svc/kong -n default 30080:80 30081:8001 &
+print_status "Kong API Gateway is accessible at: http://localhost:30080"
+print_status "Kong Admin API is accessible at: http://localhost:30081"
 
-# Grafana
+# Start port forwarding for Grafana
+print_status "Starting port forwarding for Grafana..."
 kubectl port-forward svc/grafana -n monitoring 3000:3000 &
-GRAFANA_PID=$!
+print_status "Grafana is accessible at: http://localhost:3000"
 
-# Prometheus
+# Start port forwarding for Prometheus
+print_status "Starting port forwarding for Prometheus..."
 kubectl port-forward svc/prometheus -n monitoring 9090:9090 &
-PROMETHEUS_PID=$!
+print_status "Prometheus is accessible at: http://localhost:9090"
 
-# Frontend
+# Start port forwarding for Frontend
+print_status "Starting port forwarding for Frontend..."
 kubectl port-forward svc/frontend -n default 3000:80 &
-FRONTEND_PID=$!
+print_status "Frontend is accessible at: http://localhost:3000"
 
-# Auth Service
-kubectl port-forward svc/auth-service -n default 3001:3001 &
-AUTH_PID=$!
+# Start port forwarding for Auth Service
+print_status "Starting port forwarding for Auth Service..."
+kubectl port-forward svc/auth-service -n default 3001:80 &
+print_status "Auth Service is accessible at: http://localhost:3001"
 
-# Course Service
-kubectl port-forward svc/course-service -n default 3002:3002 &
-COURSE_PID=$!
+# Start port forwarding for Course Service
+print_status "Starting port forwarding for Course Service..."
+kubectl port-forward svc/course-service -n default 3002:80 &
+print_status "Course Service is accessible at: http://localhost:3002"
 
-# Ingestion Service
-kubectl port-forward svc/ingestion-service -n default 3003:3003 &
-INGESTION_PID=$!
+# Start port forwarding for Ingestion Service
+print_status "Starting port forwarding for Ingestion Service..."
+kubectl port-forward svc/ingestion-service -n default 3003:80 &
+print_status "Ingestion Service is accessible at: http://localhost:3003"
 
-# Wait for port-forwards to be ready
-sleep 5
-
-print_status "All services are now accessible at:"
-echo -e "  - ArgoCD UI: ${GREEN}http://localhost:8080${NC}"
-echo -e "  - Kong API Gateway: ${GREEN}http://localhost:8080${NC}"
-echo -e "  - Kong Admin API: ${GREEN}http://localhost:8001${NC}"
-echo -e "  - Grafana: ${GREEN}http://localhost:3000${NC}"
-echo -e "  - Prometheus: ${GREEN}http://localhost:9090${NC}"
-echo -e "  - Frontend: ${GREEN}http://localhost:3000${NC}"
-echo -e "  - Auth Service: ${GREEN}http://localhost:3001${NC}"
-echo -e "  - Course Service: ${GREEN}http://localhost:3002${NC}"
-echo -e "  - Ingestion Service: ${GREEN}http://localhost:3003${NC}"
-echo -e "  - Public Domain: ${GREEN}http://static.79.104.245.188.clients.your-server.de${NC}"
-
-# Function to handle script termination
+# Function to cleanup port forwarding processes
 cleanup() {
-    print_status "Cleaning up..."
-    if [ ! -z "$ARGOCD_PID" ]; then
-        kill $ARGOCD_PID 2>/dev/null
-    fi
-    if [ ! -z "$KONG_PID" ]; then
-        kill $KONG_PID 2>/dev/null
-    fi
-    if [ ! -z "$KONG_ADMIN_PID" ]; then
-        kill $KONG_ADMIN_PID 2>/dev/null
-    fi
-    if [ ! -z "$GRAFANA_PID" ]; then
-        kill $GRAFANA_PID 2>/dev/null
-    fi
-    if [ ! -z "$PROMETHEUS_PID" ]; then
-        kill $PROMETHEUS_PID 2>/dev/null
-    fi
-    if [ ! -z "$FRONTEND_PID" ]; then
-        kill $FRONTEND_PID 2>/dev/null
-    fi
-    if [ ! -z "$AUTH_PID" ]; then
-        kill $AUTH_PID 2>/dev/null
-    fi
-    if [ ! -z "$COURSE_PID" ]; then
-        kill $COURSE_PID 2>/dev/null
-    fi
-    if [ ! -z "$INGESTION_PID" ]; then
-        kill $INGESTION_PID 2>/dev/null
-    fi
+    print_status "Cleaning up port forwarding processes..."
+    pkill -f "kubectl port-forward"
     exit 0
 }
 
-# Set up trap for cleanup
-trap cleanup SIGINT SIGTERM
+# Set up trap to catch Ctrl+C and cleanup
+trap cleanup SIGINT
 
-print_warning "Press Ctrl+C to stop all port-forwarding and exit"
-wait 
+print_status "All services are now accessible through port forwarding."
+print_status "Press Ctrl+C to stop port forwarding."
+
+# Keep the script running
+while true; do
+    sleep 1
+done 
