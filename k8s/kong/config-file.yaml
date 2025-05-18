@@ -132,8 +132,13 @@ data:
           - name: portainer-route
             paths:
               - /portainer
-            strip_path: false
+            strip_path: true
             preserve_host: true
             protocols:
               - http
-            path_handling: "v0" 
+            path_handling: "v0"
+            headers:
+              - name: X-Forwarded-Proto
+                values: ["http"]
+              - name: X-Forwarded-Host
+                values: ["188.245.104.79"] 
