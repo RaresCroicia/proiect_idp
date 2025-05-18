@@ -108,7 +108,7 @@ data:
           - name: argocd-route
             paths:
               - /argo
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
@@ -120,7 +120,7 @@ data:
           - name: pgadmin-route
             paths:
               - /pgadmin
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
@@ -132,7 +132,7 @@ data:
           - name: portainer-route
             paths:
               - /portainer
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
