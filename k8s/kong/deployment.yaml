@@ -50,4 +50,4 @@ spec:
       volumes:
       - name: kong-config
         configMap:
-          name: kong-test-config 
+          name: kong-config-file 
