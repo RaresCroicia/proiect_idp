@@ -7,15 +7,15 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 80
-    targetPort: 8000
-    protocol: TCP
-    name: proxy
-    nodePort: 30080
-  - port: 8001
-    targetPort: 8001
-    protocol: TCP
-    name: admin
-    nodePort: 30081
+    - name: proxy
+      port: 80
+      targetPort: 8000
+      nodePort: 30080
+      protocol: TCP
+    - name: admin
+      port: 8001
+      targetPort: 8001
+      nodePort: 30081
+      protocol: TCP
   selector:
     app: kong 

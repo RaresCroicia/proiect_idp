@@ -88,9 +88,6 @@ data:
             protocols:
               - http
               - https
-            hosts:
-              - "static.79.104.245.188.clients.your-server.de"
-              - "188.245.104.79"
             path_handling: "v0"
 
       - name: prometheus
