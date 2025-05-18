@@ -35,8 +35,6 @@ spec:
         envFrom:
         - configMapRef:
             name: course-service-config
-        - secretRef:
-            name: course-service-secrets
         readinessProbe:
           httpGet:
             path: /health
