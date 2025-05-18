@@ -36,7 +36,7 @@ fi
 print_status "Starting port-forwarding for services..."
 
 # ArgoCD
-kubectl port-forward svc/argocd-server -n argocd 8080:8080 &
+kubectl port-forward svc/argocd-server -n argocd 8080:80 &
 ARGOCD_PID=$!
 
 # Kong
@@ -54,7 +54,7 @@ kubectl port-forward svc/prometheus -n monitoring 9090:9090 &
 PROMETHEUS_PID=$!
 
 # Frontend
-kubectl port-forward svc/frontend -n default 3000:3000 &
+kubectl port-forward svc/frontend -n default 3000:80 &
 FRONTEND_PID=$!
 
 # Auth Service
