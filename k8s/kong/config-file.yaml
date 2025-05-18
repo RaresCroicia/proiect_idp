@@ -28,7 +28,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: auth-service
@@ -41,7 +40,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: course-service
@@ -54,7 +52,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: ingestion-service
@@ -67,7 +64,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: metrics
@@ -80,7 +76,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: grafana
@@ -93,7 +88,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: prometheus
@@ -106,7 +100,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: argocd
@@ -119,7 +112,6 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0"
 
       - name: pgadmin
@@ -132,5 +124,4 @@ data:
             preserve_host: true
             protocols:
               - http
-              - https
             path_handling: "v0" 
