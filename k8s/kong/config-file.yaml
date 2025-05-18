@@ -19,40 +19,53 @@ data:
 
     services:
       - name: frontend
-        url: http://frontend:3000
+        url: http://frontend.default.svc.cluster.local:3000
         routes:
           - name: frontend-route
             paths:
               - /frontend
+              - /frontend/
             strip_path: true
             preserve_host: true
+            protocols:
+              - http
+            path_handling: "v0"
 
       - name: auth-service
-        url: http://auth-service:3001
+        url: http://auth-service.default.svc.cluster.local:3001
         routes:
-          - name: auth-route
+          - name: auth-service-route
             paths:
               - /auth
-            strip_path: true
+            strip_path: false
             preserve_host: true
+            protocols:
+              - http
+            path_handling: "v0"
 
       - name: course-service
-        url: http://course-service:3002
+        url: http://course-service.default.svc.cluster.local:3002
         routes:
-          - name: course-route
+          - name: course-service-route
             paths:
               - /courses
-            strip_path: true
+            strip_path: false
             preserve_host: true
+            protocols:
+              - http
+            path_handling: "v0"
 
       - name: ingestion-service
-        url: http://ingestion-service:3003
+        url: http://ingestion-service.default.svc.cluster.local:3003
         routes:
-          - name: ingestion-route
+          - name: ingestion-service-route
             paths:
               - /ingestion
-            strip_path: true
+            strip_path: false
             preserve_host: true
+            protocols:
+              - http
+            path_handling: "v0"
 
       - name: metrics
         url: http://kong-admin.default.svc.cluster.local:8001
@@ -90,30 +103,38 @@ data:
               - http
             path_handling: "v0"
 
-      - name: argocd-server
-        url: http://argocd-server.argocd:80
+      - name: argocd
+        url: http://argocd-server.argocd.svc.cluster.local:80
         routes:
           - name: argocd-route
             paths:
               - /argo
-            strip_path: true
+            strip_path: false
             preserve_host: true
+            protocols:
+              - http
+            path_handling: "v0"
 
       - name: pgadmin
-        url: http://pgadmin:80
+        url: http://pgadmin.default.svc.cluster.local:80
         routes:
           - name: pgadmin-route
             paths:
               - /pgadmin
-            strip_path: true
+            strip_path: false
             preserve_host: true
+            protocols:
+              - http
+            path_handling: "v0"
 
       - name: portainer
-        url: http://portainer:9000
+        url: http://portainer.default.svc.cluster.local:9000
         routes:
           - name: portainer-route
             paths:
               - /portainer
             strip_path: true
             preserve_host: true
-            headers: ['X-Forwarded-Proto: http', 'X-Forwarded-Host: 188.245.104.79'] 
+            protocols:
+              - http
+            path_handling: "v0" 
