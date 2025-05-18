@@ -124,4 +124,16 @@ data:
             preserve_host: true
             protocols:
               - http
+            path_handling: "v0"
+
+      - name: portainer
+        url: http://portainer.default.svc.cluster.local:9000
+        routes:
+          - name: portainer-route
+            paths:
+              - /portainer
+            strip_path: false
+            preserve_host: true
+            protocols:
+              - http
             path_handling: "v0" 
