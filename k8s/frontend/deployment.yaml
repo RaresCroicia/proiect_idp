@@ -23,6 +23,10 @@ spec:
         env:
         - name: VITE_API_URL
           value: http://kong:8000
+        - name: VITE_BASE_URL
+          value: "/frontend"
+        - name: VITE_SERVE_FROM_SUBPATH
+          value: "true"
         resources:
           requests:
             memory: "128Mi"

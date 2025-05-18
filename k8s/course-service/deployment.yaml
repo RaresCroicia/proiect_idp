@@ -37,6 +37,18 @@ spec:
             name: course-service-config
         - secretRef:
             name: course-service-secrets
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3002
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3002
+          initialDelaySeconds: 15
+          periodSeconds: 20
         resources:
           requests:
             memory: "128Mi"

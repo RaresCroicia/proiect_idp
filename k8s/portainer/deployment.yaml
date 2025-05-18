@@ -35,6 +35,10 @@ spec:
           value: "0"
         - name: PORTAINER_EDGE_INSECURE_POLL
           value: "0"
+        - name: PORTAINER_BASE_URL
+          value: "/portainer"
+        - name: PORTAINER_SERVE_FROM_SUBPATH
+          value: "true"
         volumeMounts:
         - name: portainer-data
           mountPath: /data

@@ -43,6 +43,18 @@ spec:
             name: ingestion-service-config
         - secretRef:
             name: ingestion-service-secrets
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3003
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3003
+          initialDelaySeconds: 15
+          periodSeconds: 20
         resources:
           requests:
             memory: "128Mi"
