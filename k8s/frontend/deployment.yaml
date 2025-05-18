@@ -23,9 +23,9 @@ spec:
         env:
         - name: VITE_API_URL
           value: "http://kong:8000"
-        - name: VITE_AUTH_URL
+        - name: VITE_AUTH_SERVICE_URL
           value: "http://kong:8000/auth"
-        - name: VITE_COURSES_URL
+        - name: VITE_COURSE_SERVICE_URL
           value: "http://kong:8000/courses"
         - name: VITE_BASE_URL
           value: "/frontend"
