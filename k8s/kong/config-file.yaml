@@ -90,6 +90,12 @@ data:
               - https
             hosts:
               - "*"
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
 
       - name: prometheus
         url: http://prometheus.monitoring:9090
