@@ -11,10 +11,12 @@ spec:
   - name: proxy
     port: 80
     targetPort: 8000
+    nodePort: 30080
     protocol: TCP
   - name: proxy-ssl
     port: 443
     targetPort: 8443
+    nodePort: 30443
     protocol: TCP
   - name: admin
     port: 8001
@@ -24,4 +26,4 @@ spec:
     port: 8444
     targetPort: 8444
     protocol: TCP
-  type: LoadBalancer 
+  type: NodePort 
