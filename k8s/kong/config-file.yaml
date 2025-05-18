@@ -103,12 +103,24 @@ data:
               - https
 
       - name: argocd
-        url: http://argocd-server.argocd.svc.cluster.local:8080
+        url: http://argocd-server.argocd.svc.cluster.local:80
         routes:
           - name: argocd-route
             paths:
               - /argo
             strip_path: true
+            preserve_host: true
+            protocols:
+              - http
+              - https
+
+      - name: pgadmin
+        url: http://pgadmin.default.svc.cluster.local:80
+        routes:
+          - name: pgadmin-route
+            paths:
+              - /pgadmin
+            strip_path: false
             preserve_host: true
             protocols:
               - http
