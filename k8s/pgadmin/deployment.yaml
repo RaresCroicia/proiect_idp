@@ -29,6 +29,8 @@ spec:
           value: "False"
         - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
           value: "False"
+        - name: PGADMIN_CONFIG_MAIL_SERVER_ENABLED
+          value: "False"
         - name: PGADMIN_CONFIG_LOGIN_BANNER
           value: "Welcome to pgAdmin 4"
         volumeMounts:
