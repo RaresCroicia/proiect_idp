@@ -15,6 +15,13 @@ spec:
         app: kong
     spec:
       hostNetwork: true
+      initContainers:
+      - name: init-kong
+        image: kong:3.4
+        command: ["/bin/sh", "-c", "mkdir -p /usr/local/kong && chown -R kong:kong /usr/local/kong"]
+        volumeMounts:
+        - name: kong-config
+          mountPath: /usr/local/kong/declarative
       containers:
       - name: kong
         image: kong:3.4
