@@ -91,7 +91,7 @@ data:
             hosts:
               - "static.79.104.245.188.clients.your-server.de"
               - "188.245.104.79"
-              - "*"
+              - "*.your-server.de"
 
       - name: prometheus
         url: http://prometheus.monitoring:9090
