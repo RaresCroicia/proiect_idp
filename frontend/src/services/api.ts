@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:3001';
-const COURSE_SERVICE_URL = import.meta.env.VITE_COURSE_SERVICE_URL || 'http://localhost:3002';
+const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
+const COURSE_SERVICE_URL = import.meta.env.VITE_COURSE_SERVICE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Create separate axios instances for each service
 const authApi = axios.create({
