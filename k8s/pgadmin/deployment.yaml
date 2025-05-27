@@ -24,7 +24,7 @@ spec:
             name: pgadmin-secrets
         env:
         - name: PGADMIN_CONFIG_SERVER_MODE
-          value: "False"
+          value: "True"
         - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
           value: "False"
         - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
@@ -34,7 +34,17 @@ spec:
         - name: PGADMIN_CONFIG_LOGIN_BANNER
           value: '"Welcome to pgAdmin 4"'
         - name: PGADMIN_CONFIG_SESSION_TIMEOUT
-          value: "0"
+          value: "3600"
+        - name: PGADMIN_CONFIG_MAX_CONNECTION_IDLE_TIME
+          value: "600"
+        - name: PGADMIN_CONFIG_MAX_CONNECTION_LIFETIME
+          value: "3600"
+        - name: PGADMIN_CONFIG_POOL_RECYCLE
+          value: "3600"
+        - name: PGADMIN_CONFIG_POOL_SIZE
+          value: "10"
+        - name: PGADMIN_CONFIG_POOL_TIMEOUT
+          value: "30"
         volumeMounts:
         - name: pgadmin-data
           mountPath: /var/lib/pgadmin
