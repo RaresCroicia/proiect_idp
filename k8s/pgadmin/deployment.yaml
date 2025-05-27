@@ -17,34 +17,15 @@ spec:
       containers:
       - name: pgadmin
         image: dpage/pgadmin4:6.21
-        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: "admin@admin.com"
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: "admin"
         - name: PGADMIN_CONFIG_SERVER_MODE
-          value: "True"
-        - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
           value: "False"
-        - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
-          value: "False"
-        - name: PGADMIN_CONFIG_MAIL_SERVER_ENABLED
-          value: "False"
-        - name: PGADMIN_CONFIG_BASE_URL
-          value: "/pgadmin"
-        - name: PGADMIN_CONFIG_SERVE_FROM_SUBPATH
-          value: "True"
-        readinessProbe:
-          httpGet:
-            path: /misc/ping
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /misc/ping
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
         volumeMounts:
         - name: pgadmin-data
           mountPath: /var/lib/pgadmin
