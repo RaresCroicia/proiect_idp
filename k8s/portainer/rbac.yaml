@@ -10,7 +10,7 @@ metadata:
   name: portainer
 rules:
 - apiGroups: [""]
-  resources: ["namespaces", "services", "pods", "nodes", "configmaps", "secrets"]
+  resources: ["namespaces", "services", "pods", "nodes", "configmaps", "secrets", "resourcequotas"]
   verbs: ["get", "list", "watch"]
 - apiGroups: ["apps"]
   resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
@@ -32,5 +32,5 @@ subjects:
   namespace: default
 roleRef:
   kind: ClusterRole
-  name: portainer
+  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io 
