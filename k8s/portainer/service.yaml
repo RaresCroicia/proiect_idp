@@ -12,10 +12,8 @@ spec:
     port: 9000
     targetPort: 9000
     protocol: TCP
-    nodePort: 30900
   - name: edge
     port: 8000
     targetPort: 8000
     protocol: TCP
-    nodePort: 30800
-  type: NodePort 
+  type: ClusterIP 
