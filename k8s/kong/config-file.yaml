@@ -133,7 +133,7 @@ data:
           - name: portainer-route
             paths:
               - /portainer
-            strip_path: true
+            strip_path: false
             preserve_host: true
             protocols:
               - http
