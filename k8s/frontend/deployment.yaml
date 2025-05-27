@@ -17,7 +17,7 @@ spec:
       containers:
       - name: frontend
         image: ghcr.io/rarescroicia/proiect-idp/frontend:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
         env:
