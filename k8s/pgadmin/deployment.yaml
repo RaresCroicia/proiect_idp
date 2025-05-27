@@ -25,6 +25,11 @@ spec:
             name: pgadmin-config
         - secretRef:
             name: pgadmin-secrets
+        env:
+        - name: PGADMIN_CONFIG_MASTER_PASSWORD
+          value: "admin"
+        - name: PGADMIN_CONFIG_MASTER_PASSWORD_FILE
+          value: "/pgadmin4/pgadmin4.db"
         readinessProbe:
           httpGet:
             path: /misc/ping
@@ -37,29 +42,6 @@ spec:
             port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
-        env:
-        - name: PGADMIN_CONFIG_SERVER_MODE
-          value: "True"
-        - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
-          value: "False"
-        - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
-          value: "False"
-        - name: PGADMIN_CONFIG_MAIL_SERVER_ENABLED
-          value: "False"
-        - name: PGADMIN_CONFIG_LOGIN_BANNER
-          value: '"Welcome to pgAdmin 4"'
-        - name: PGADMIN_CONFIG_SESSION_TIMEOUT
-          value: "3600"
-        - name: PGADMIN_CONFIG_MAX_CONNECTION_IDLE_TIME
-          value: "600"
-        - name: PGADMIN_CONFIG_MAX_CONNECTION_LIFETIME
-          value: "3600"
-        - name: PGADMIN_CONFIG_POOL_RECYCLE
-          value: "3600"
-        - name: PGADMIN_CONFIG_POOL_SIZE
-          value: "10"
-        - name: PGADMIN_CONFIG_POOL_TIMEOUT
-          value: "30"
         volumeMounts:
         - name: pgadmin-data
           mountPath: /var/lib/pgadmin
