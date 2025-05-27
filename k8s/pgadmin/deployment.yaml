@@ -16,21 +16,22 @@ spec:
     spec:
       containers:
       - name: pgadmin
-        image: dpage/pgadmin4:latest
+        image: dpage/pgadmin4:6.21
         imagePullPolicy: Always
         ports:
         - containerPort: 80
-        envFrom:
-        - configMapRef:
-            name: pgadmin-config
-        - secretRef:
-            name: pgadmin-secrets
         env:
-        - name: PGADMIN_CONFIG_MASTER_PASSWORD
-          value: "admin"
-        - name: PGADMIN_CONFIG_MASTER_PASSWORD_FILE
-          value: "/pgadmin4/pgadmin4.db"
+        - name: PGADMIN_CONFIG_SERVER_MODE
+          value: "True"
         - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+          value: "False"
+        - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
+          value: "False"
+        - name: PGADMIN_CONFIG_MAIL_SERVER_ENABLED
+          value: "False"
+        - name: PGADMIN_CONFIG_BASE_URL
+          value: "/pgadmin"
+        - name: PGADMIN_CONFIG_SERVE_FROM_SUBPATH
           value: "True"
         readinessProbe:
           httpGet:
