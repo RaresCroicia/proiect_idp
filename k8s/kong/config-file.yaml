@@ -121,7 +121,7 @@ data:
           - name: pgadmin-route
             paths:
               - /pgadmin
-            strip_path: false
+            strip_path: true
             preserve_host: true
             protocols:
               - http
