@@ -7,9 +7,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
+  - port: 5050
+    targetPort: 5050
     protocol: TCP
   selector:
     app: pgadmin 
