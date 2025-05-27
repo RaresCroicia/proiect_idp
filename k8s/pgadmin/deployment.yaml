@@ -30,6 +30,8 @@ spec:
           value: "admin"
         - name: PGADMIN_CONFIG_MASTER_PASSWORD_FILE
           value: "/pgadmin4/pgadmin4.db"
+        - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+          value: "True"
         readinessProbe:
           httpGet:
             path: /misc/ping
