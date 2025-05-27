@@ -14,6 +14,7 @@ spec:
       labels:
         app: portainer
     spec:
+      serviceAccountName: portainer
       containers:
       - name: portainer
         image: portainer/portainer-ce:latest
@@ -26,7 +27,7 @@ spec:
         - name: PORTAINER_ADMIN_USERNAME
           value: "admin"
         - name: PORTAINER_ADMIN_PASSWORD
-          value: "admin"
+          value: "passwordpassword"
         - name: PORTAINER_SECURITY_TIMEOUT
           value: "0"
         - name: PORTAINER_SECURITY_TIMEOUT_ENABLED
