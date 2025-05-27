@@ -22,11 +22,11 @@ spec:
         - containerPort: 3000
         env:
         - name: VITE_API_URL
-          value: "http://kong:8000"
+          value: "http://188.245.104.79/api"
         - name: VITE_AUTH_SERVICE_URL
-          value: "http://kong:8000/auth"
+          value: "http://188.245.104.79/auth"
         - name: VITE_COURSE_SERVICE_URL
-          value: "http://kong:8000/courses"
+          value: "http://188.245.104.79/courses"
         - name: VITE_BASE_URL
           value: "/frontend"
         - name: VITE_SERVE_FROM_SUBPATH
