@@ -8,14 +8,21 @@ RUN npm install
 
 COPY . .
 
-# Create a script to replace environment variables at runtime
-RUN echo '#!/bin/sh\n\
-envsubst < /usr/share/nginx/html/index.html > /usr/share/nginx/html/index.html.tmp\n\
-mv /usr/share/nginx/html/index.html.tmp /usr/share/nginx/html/index.html\n\
-nginx -g "daemon off;"' > /docker-entrypoint.sh && \
-chmod +x /docker-entrypoint.sh
+# Build the app with environment variables
+ARG VITE_API_URL
+ARG VITE_AUTH_SERVICE_URL
+ARG VITE_COURSE_SERVICE_URL
+ARG VITE_BASE_URL
+ARG VITE_SERVE_FROM_SUBPATH
+ARG VITE_PORT
 
-# Build the app
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_AUTH_SERVICE_URL=${VITE_AUTH_SERVICE_URL}
+ENV VITE_COURSE_SERVICE_URL=${VITE_COURSE_SERVICE_URL}
+ENV VITE_BASE_URL=${VITE_BASE_URL}
+ENV VITE_SERVE_FROM_SUBPATH=${VITE_SERVE_FROM_SUBPATH}
+ENV VITE_PORT=${VITE_PORT}
+
 RUN npm run build
 
 FROM nginx:alpine
@@ -24,9 +31,8 @@ FROM nginx:alpine
 RUN apk add --no-cache gettext
 
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY --from=builder /docker-entrypoint.sh /docker-entrypoint.sh
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3000
 
-CMD ["/docker-entrypoint.sh"] 
+CMD ["nginx", "-g", "daemon off;"] 
