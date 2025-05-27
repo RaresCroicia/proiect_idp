@@ -41,6 +41,7 @@ spec:
           value: "true"
         - name: PORTAINER_HOST
           value: "portainer.default.svc.cluster.local"
+        - name: PORTAINER_ADMIN_USERNAME
         volumeMounts:
         - name: portainer-data
           mountPath: /data
