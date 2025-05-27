@@ -23,10 +23,10 @@ spec:
         - containerPort: 8000
           name: edge
         env:
+        - name: PORTAINER_ADMIN_USERNAME
+          value: "admin"
         - name: PORTAINER_ADMIN_PASSWORD
           value: "admin"
-        - name: PORTAINER_ADMIN_PASSWORD_HASH
-          value: "$2a$05$IxQ2H3Yj5zSYbA5p1YqpuOYg/8KwxYpF7YV1J9Kc9J9Kc9J9Kc9J9K"
         - name: PORTAINER_SECURITY_TIMEOUT
           value: "0"
         - name: PORTAINER_SECURITY_TIMEOUT_ENABLED
@@ -41,7 +41,6 @@ spec:
           value: "true"
         - name: PORTAINER_HOST
           value: "portainer.default.svc.cluster.local"
-        - name: PORTAINER_ADMIN_USERNAME
         volumeMounts:
         - name: portainer-data
           mountPath: /data
